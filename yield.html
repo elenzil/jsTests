@@ -1,0 +1,60 @@
+<html>
+	<head>
+		<script>
+		function gebid(id) {
+			return document.getElementById(id);
+		}
+
+		function outputLine(line) {
+			gebid('stuff').innerHTML += line + "<br>";
+		}
+
+		function outputClear() {
+			gebid('stuff').innerHTML = "";
+		}
+
+		function onLoad() {
+			reset();
+			outputLine("click 'next' to advance the CR iterator");
+		}
+
+		function* crMyCoroutine() {
+			var n = 0;
+
+			while (n < 4) {
+				outputLine("hello from crMyCoroutine(). n = " + n);
+				n += 1;
+				yield n;
+			}
+
+		}
+
+		var iterator;
+		var iterVal;
+
+		function reset() {
+			iterator = crMyCoroutine();
+			iterVal  = {value: -1};
+			outputClear();
+		}
+
+		function doIt() {
+			if (iterVal.value !== undefined) {
+				iterVal = iterator.next();
+				outputLine("iterVal = " + iterVal.value);
+			}
+
+			if (iterVal.value === undefined) {
+				outputLine("all done");
+			}
+		}
+
+		</script>
+	</head>
+
+	<body onLoad="onLoad()">
+		<button onClick="reset()">reset</button>
+		<button onClick="doIt()">next</button>
+		<div id='stuff'></div>
+	</body>
+</html>
